@@ -16,9 +16,20 @@
 
 package com.example.android.databinding.basicsample.util
 
+import android.content.Context
+import android.content.res.ColorStateList
+import android.graphics.Color
+import android.graphics.drawable.Drawable
+import android.media.Image
+import android.os.Build
 import android.view.View
+import android.widget.ImageView
 import android.widget.ProgressBar
+import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.databinding.BindingAdapter
+import com.example.android.databinding.basicsample.R
+import com.example.android.databinding.basicsample.data.Popularity
 
 
 /**
@@ -39,5 +50,41 @@ fun setProgress(progressBar: ProgressBar, likes: Int, max: Int) {
 @BindingAdapter("app:hideIfZero")
 fun hideIfZero(view: View, number: Int) {
     view.visibility = if (number == 0) View.GONE else View.VISIBLE
+}
+
+@BindingAdapter("app:popularityIcon")
+fun popularityIcon(image: ImageView, popularity: Popularity) {
+    val color = when (popularity) {
+        Popularity.NORMAL -> image.context.theme.obtainStyledAttributes(
+            intArrayOf(android.R.attr.colorForeground)
+        ).getColor(0, 0x000000)
+        Popularity.POPULAR -> ContextCompat.getColor(image.context, R.color.popular)
+        Popularity.STAR -> ContextCompat.getColor(image.context, R.color.star)
+    }
+    ImageViewCompat.setImageTintList(image, ColorStateList.valueOf(color))
+    val icon = when (popularity) {
+        Popularity.NORMAL -> {
+            ContextCompat.getDrawable(image.context, R.drawable.ic_person_black_96dp)
+        }
+        Popularity.POPULAR -> {
+            ContextCompat.getDrawable(image.context, R.drawable.ic_whatshot_black_96dp)
+        }
+        Popularity.STAR -> {
+            ContextCompat.getDrawable(image.context, R.drawable.ic_whatshot_black_96dp)
+        }
+    }
+    image.setImageDrawable(icon)
+}
+
+@BindingAdapter("app:progressTint")
+fun progressTint(view: ProgressBar, popularity: Popularity){
+    val color = when (popularity) {
+        Popularity.NORMAL -> view.context.theme.obtainStyledAttributes(
+            intArrayOf(android.R.attr.colorForeground)
+        ).getColor(0, 0x000000)
+        Popularity.POPULAR -> ContextCompat.getColor(view.context, R.color.popular)
+        Popularity.STAR -> ContextCompat.getColor(view.context, R.color.star)
+    }
+    view.progressTintList = ColorStateList.valueOf(color)
 }
 
